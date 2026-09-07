@@ -21,13 +21,13 @@ export function SearchInput() {
   }
 
   return (
-    <div className="relative">
+    <div className="relative flex-1 sm:flex-none">
       <SearchIcon className="absolute size-4 text-navy-200 left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
 
       <Input
         type="text"
         placeholder="Search for features..."
-        className="w-67.5 pl-8"
+        className="w-full pl-8 sm:w-67.5"
         value={search}
         onChange={handleSearchUpdate}
       />
