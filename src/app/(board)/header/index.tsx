@@ -1,8 +1,11 @@
 import { Suspense } from "react"
+import { apiEnv } from "@/api-env"
 import { UserButton } from "@/components/header/user-button"
 import { SearchInput } from "./search-input"
 
 export function Header() {
+  const guest = Boolean(apiEnv.DEMO_MODE) && !apiEnv.GITHUB_CLIENT_ID
+
   return (
     <div className="max-w-225 mx-auto w-full flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="space-y-1">
@@ -16,7 +19,7 @@ export function Header() {
         <Suspense>
           <SearchInput />
         </Suspense>
-        <UserButton />
+        <UserButton guest={guest} />
       </div>
     </div>
   )

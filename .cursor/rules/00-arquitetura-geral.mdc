@@ -1,0 +1,32 @@
+---
+description: Arquitetura e convencoes gerais do projeto Board
+alwaysApply: true
+---
+
+# Board - Arquitetura Geral
+
+## Stack principal
+- Next.js App Router (`src/app`) para UI e roteamento.
+- API HTTP em Hono + OpenAPI (`src/api`) exposta via route handler em `src/app/api/[[...route]]/route.ts`.
+- Banco com Drizzle ORM + Postgres (`src/api/db`).
+- Auth com Better Auth (server em `src/api/auth.ts`, client em `src/lib/auth-client.ts`).
+- Validacao com Zod para request/response na API e parse no consumo HTTP.
+
+## Organizacao de pastas
+- `src/app`: paginas, layouts, loading states, metadata e composicao de UI por rota.
+- `src/api`: contrato e implementacao da API (rotas Hono, middlewares, schemas, auth, db).
+- `src/http`: funcoes de acesso HTTP usadas pela aplicacao (server/client), sempre com parse de schema.
+- `src/components`: componentes de UI reutilizaveis com `twMerge`.
+- `src/lib`: providers e libs cross-cutting (ex.: React Query, auth client).
+
+## Convencoes de implementacao
+- Tipagem estrita em TypeScript (`strict: true`) e alias `@/*`.
+- Preferir nomes explicitos por dominio (`listIssues`, `getIssueInteractions`, `createComment`).
+- Evitar logica de negocio em componentes visuais; manter em API/HTTP/services.
+- Reaproveitar schemas compartilhados quando fizer sentido entre API e consumo.
+- Manter respostas e erros consistentes (`error` + `message` para casos de falha).
+
+## Qualidade e estilo
+- Ferramenta oficial do projeto: Biome (`npm run lint`, `npm run format`).
+- Formato predominante: indentacao 2 espacos; semicolons as-needed.
+- Nao introduzir bibliotecas paralelas para lint/format sem necessidade (ex.: ESLint/Prettier duplicados).

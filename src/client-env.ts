@@ -4,10 +4,11 @@ const clientEnvSchema = z.object({
   NEXT_PUBLIC_API_URL: z.url().optional().default("http://localhost:3000"),
 })
 
-// Cada variável é nomeada uma a uma, e não `parse(process.env)`. No navegador o
-// Next substitui `process.env.NEXT_PUBLIC_X` pelo valor durante o build, mas só
-// quando a chave aparece escrita no código. Passando o objeto inteiro, o cliente
-// recebe `{}` e cai no padrão, que é o endereço da máquina de quem compilou.
+// Every variable is named one by one instead of `parse(process.env)`. In the
+// browser Next substitutes `process.env.NEXT_PUBLIC_X` at build time, but only
+// where the key is written out in the code. Hand it the whole object and the
+// client receives `{}`, falls back to the default, and calls whatever address
+// the machine that built it was using.
 export const clientEnv = clientEnvSchema.parse({
   NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
 })

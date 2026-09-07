@@ -1,9 +1,9 @@
-import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
-import { and, eq, inArray } from "drizzle-orm";
-import type { AuthSession } from "../auth";
-import { db } from "../db";
-import { issueLikes, issues } from "../db/schema";
-import { IssueInteractionsResponseSchema } from "./schemas/issue-interactions";
+import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
+import { and, eq, inArray } from "drizzle-orm"
+import type { AuthSession } from "../auth"
+import { db } from "../db"
+import { issueLikes, issues } from "../db/schema"
+import { IssueInteractionsResponseSchema } from "./schemas/issue-interactions"
 
 const route = createRoute({
   method: "get",
@@ -29,21 +29,21 @@ const route = createRoute({
       description: "User interactions with issues (likes)",
     },
   },
-});
+})
 
 export const getIssueInteractions = new OpenAPIHono<{
   Variables: {
-    user: AuthSession["user"] | null;
-    session: AuthSession["session"] | null;
-  };
+    user: AuthSession["user"] | null
+    session: AuthSession["session"] | null
+  }
 }>().openapi(route, async (c) => {
-  const { issueIds } = c.req.valid("query");
-  const user = c.get("user");
+  const { issueIds } = c.req.valid("query")
+  const user = c.get("user")
 
-  const issueIdArray = issueIds.split(",").filter(Boolean);
+  const issueIdArray = issueIds.split(",").filter(Boolean)
 
   if (issueIdArray.length === 0) {
-    return c.json({ interactions: [] }, 200);
+    return c.json({ interactions: [] }, 200)
   }
 
   // Get likes count for each issue
@@ -53,10 +53,10 @@ export const getIssueInteractions = new OpenAPIHono<{
       likes: issues.likes,
     })
     .from(issues)
-    .where(inArray(issues.id, issueIdArray));
+    .where(inArray(issues.id, issueIdArray))
 
   // If user is authenticated, get their likes
-  let userLikes: string[] = [];
+  let userLikes: string[] = []
   if (user) {
     const likes = await db
       .select({ issueId: issueLikes.issueId })
@@ -66,16 +66,16 @@ export const getIssueInteractions = new OpenAPIHono<{
           eq(issueLikes.userId, user.id),
           inArray(issueLikes.issueId, issueIdArray),
         ),
-      );
+      )
 
-    userLikes = likes.map((like) => like.issueId);
+    userLikes = likes.map((like) => like.issueId)
   }
 
   const interactions = issuesData.map((issue) => ({
     issueId: issue.id,
     isLiked: userLikes.includes(issue.id),
     likesCount: issue.likes,
-  }));
+  }))
 
-  return c.json({ interactions }, 200);
-});
+  return c.json({ interactions }, 200)
+})

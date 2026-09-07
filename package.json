@@ -1,7 +1,8 @@
 {
-  "name": "board",
+  "name": "saas-template",
   "version": "0.1.0",
   "private": true,
+  "description": "Starter template for building SaaS apps with Next.js 16+, TypeScript, Drizzle, and Hono",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,7 +13,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:seed": "tsx src/api/db/seed.ts"
+    "db:seed": "tsx src/api/db/seed.ts",
+    "db:seed:guest": "tsx src/api/db/seed-guest.ts"
   },
   "dependencies": {
     "@faker-js/faker": "10.0.0",

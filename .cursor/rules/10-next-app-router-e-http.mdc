@@ -1,0 +1,33 @@
+---
+description: Padroes para Next App Router e camada src/http
+globs: "{src/app/**/*.ts,src/app/**/*.tsx,src/http/**/*.ts,src/http/**/*.tsx}"
+alwaysApply: false
+---
+
+# Next App Router e HTTP
+
+## Server-first no App Router
+- Em `src/app`, componentes devem ser server components por padrao.
+- Adicionar `"use client"` apenas quando houver estado local, handlers de evento, hooks de browser ou React Query.
+- Em paginas server, receber e resolver `params`/`searchParams` de forma tipada.
+
+## Metadata e estrutura de rota
+- Definir `metadata`/`generateMetadata` por pagina para SEO.
+- Usar `layout.tsx` para composicao compartilhada por segmento.
+- Manter `loading.tsx` para estados de carregamento por rota quando houver fetch relevante.
+
+## Padrao da camada HTTP (`src/http`)
+- Construir URL com `new URL(path, clientEnv.NEXT_PUBLIC_API_URL)`.
+- Fazer `fetch` nativo (evitar wrappers externos sem necessidade).
+- Sempre fazer parse/validacao da resposta com schema Zod.
+- Para operacoes server-only, usar `import "server-only"` quando apropriado.
+
+## Cache e invalidacao
+- Para leitura server-side, seguir padrao existente com `"use cache"` e `cacheLife(...)`.
+- Para mutacoes que afetam dados cacheados, invalidar com `updateTag(...)` quando aplicavel.
+- Nao adicionar cache manual inconsistente com as APIs de cache do Next ja usadas no projeto.
+
+## Erros e robustez
+- Evitar retornar `any` de `response.json()` sem parse.
+- Manter mensagens de erro claras e orientadas ao dominio.
+- Se houver dependencia de autenticacao/cookies, encaminhar headers de forma explicita.

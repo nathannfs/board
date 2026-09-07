@@ -1,12 +1,12 @@
-import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
-import { asc, eq } from "drizzle-orm";
-import { db } from "../db";
-import { comments, issues } from "../db/schema";
+import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
+import { asc, eq } from "drizzle-orm"
+import { db } from "../db"
+import { comments, issues } from "../db/schema"
 
 export const CommentAuthorSchema = z.object({
   name: z.string(),
   avatar: z.url(),
-});
+})
 
 export const CommentSchema = z.object({
   id: z.uuidv4(),
@@ -14,31 +14,31 @@ export const CommentSchema = z.object({
   author: CommentAuthorSchema,
   text: z.string(),
   createdAt: z.string().datetime(),
-});
+})
 
 export const CommentsListResponseSchema = z.object({
   comments: z.array(CommentSchema),
   total: z.number().int(),
   limit: z.number().int(),
   offset: z.number().int(),
-});
+})
 
 const ErrorSchema = z.object({
   error: z.string(),
   message: z.string(),
-});
+})
 
 const ParamsSchema = z.object({
   id: z.uuidv4().openapi({
     param: { name: "id", in: "path" },
     example: "550e8400-e29b-41d4-a716-446655440000",
   }),
-});
+})
 
 const QuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).optional().default(50),
   offset: z.coerce.number().int().min(0).optional().default(0),
-});
+})
 
 const route = createRoute({
   method: "get",
@@ -65,14 +65,14 @@ const route = createRoute({
       description: "Issue not found",
     },
   },
-});
+})
 
 export const listIssueComments = new OpenAPIHono().openapi(route, async (c) => {
-  const { id } = c.req.valid("param");
-  const { limit, offset } = c.req.valid("query");
+  const { id } = c.req.valid("param")
+  const { limit, offset } = c.req.valid("query")
 
   // Check if issue exists
-  const [issue] = await db.select().from(issues).where(eq(issues.id, id));
+  const [issue] = await db.select().from(issues).where(eq(issues.id, id))
 
   if (!issue) {
     return c.json(
@@ -81,20 +81,20 @@ export const listIssueComments = new OpenAPIHono().openapi(route, async (c) => {
         message: `Issue with id ${id} does not exist`,
       },
       404,
-    );
+    )
   }
 
   const issueComments = await db
     .select()
     .from(comments)
     .where(eq(comments.issueId, id))
-    // Mais antigo primeiro: uma thread lida de trás para frente coloca a
-    // resposta acima da pergunta.
+    // Oldest first: a thread read backwards puts the answer above the
+    // question.
     .orderBy(asc(comments.createdAt))
     .limit(limit)
-    .offset(offset);
+    .offset(offset)
 
-  const total = await db.$count(comments, eq(comments.issueId, id));
+  const total = await db.$count(comments, eq(comments.issueId, id))
 
   return c.json(
     {
@@ -113,5 +113,5 @@ export const listIssueComments = new OpenAPIHono().openapi(route, async (c) => {
       offset,
     },
     200,
-  );
-});
+  )
+})

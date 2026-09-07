@@ -1,0 +1,31 @@
+---
+description: Padroes para Drizzle, auth e validacao de ambiente
+globs: "{src/api/db/**/*.ts,src/api/auth.ts,src/lib/auth-client.ts,src/api-env.ts,src/client-env.ts,drizzle.config.ts}"
+alwaysApply: false
+---
+
+# Dados, Auth e Ambiente
+
+## Drizzle e schema
+- Definir entidades em `src/api/db/schema.ts` com tipos explicitos e constraints.
+- Usar `snake_case` no banco (configurado no `drizzle(...)`) e manter nomenclatura consistente.
+- Declarar chaves estrangeiras com comportamento de delecao explicito (`onDelete`).
+
+## Migrations e fluxo de banco
+- Gerar e aplicar migrations via scripts existentes (`db:generate`, `db:migrate`, `db:push`).
+- Evitar alteracoes manuais em snapshots/meta sem necessidade real.
+- Mudancas de schema devem refletir contratos da API e parsers do frontend.
+
+## Better Auth
+- Manter integracao server em `src/api/auth.ts` e client em `src/lib/auth-client.ts`.
+- Nao expor segredos em codigo client.
+- Para rotas autenticadas, usar sessao no contexto da API + middleware apropriado.
+
+## Variaveis de ambiente
+- Validar env com Zod (`api-env.ts` e `client-env.ts`) antes de uso.
+- Toda nova variavel deve entrar no schema correspondente (server vs public).
+- Variaveis `NEXT_PUBLIC_*` sao publicas por definicao; nao colocar segredos nelas.
+
+## Seguranca e confiabilidade
+- Nao acessar `process.env` diretamente em varios pontos; centralizar via modulos de env.
+- Em operacoes sensiveis, garantir que auth/session e ownership foram checados.

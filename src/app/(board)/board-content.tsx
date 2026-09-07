@@ -48,9 +48,9 @@ export function BoardContent({ issues }: BoardContentProps) {
   }, [interactionsData])
 
   return (
-    // No celular as quatro colunas viram uma faixa que rola de lado, cada uma
-    // com largura de leitura. Espremidas na grade de quatro, o título de cada
-    // card quebrava letra por letra.
+    // On a phone the four columns become a strip that scrolls sideways, each
+    // one wide enough to read. Squeezed into the four-column grid, every card
+    // title broke one letter per line.
     <main className="flex flex-1 min-h-0 gap-5 overflow-x-auto pb-2 md:grid md:grid-cols-4 md:overflow-x-visible md:pb-0">
       {COLUMNS.map((column) => (
         <Column

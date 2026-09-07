@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { sql } from "drizzle-orm"
 import {
   boolean,
   integer,
@@ -8,20 +8,20 @@ import {
   text,
   timestamp,
   uuid,
-} from "drizzle-orm/pg-core";
+} from "drizzle-orm/pg-core"
 
 export const issueNumberSeq = pgSequence("issue_number_seq", {
   startWith: 0,
   minValue: 0,
   increment: 1,
-});
+})
 
 export const issueStatusEnum = pgEnum("issue_status", [
   "backlog",
   "todo",
   "in_progress",
   "done",
-]);
+])
 
 export const issues = pgTable("issues", {
   id: uuid().primaryKey().defaultRandom(),
@@ -34,7 +34,7 @@ export const issues = pgTable("issues", {
   status: issueStatusEnum().notNull().default("backlog"),
   likes: integer().notNull().default(0),
   createdAt: timestamp().notNull().defaultNow(),
-});
+})
 
 export const comments = pgTable("comments", {
   id: uuid().primaryKey().defaultRandom(),
@@ -45,7 +45,7 @@ export const comments = pgTable("comments", {
   authorAvatar: text().notNull(),
   text: text().notNull(),
   createdAt: timestamp().notNull().defaultNow(),
-});
+})
 
 export const issueLikes = pgTable("issue_likes", {
   id: uuid().primaryKey().defaultRandom(),
@@ -56,7 +56,7 @@ export const issueLikes = pgTable("issue_likes", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   createdAt: timestamp().notNull().defaultNow(),
-});
+})
 
 // Better Auth tables (plural names)
 export const users = pgTable("users", {
@@ -70,7 +70,7 @@ export const users = pgTable("users", {
     .defaultNow()
     .$onUpdate(() => new Date())
     .notNull(),
-});
+})
 
 export const sessions = pgTable("sessions", {
   id: uuid().primaryKey().defaultRandom(),
@@ -85,7 +85,7 @@ export const sessions = pgTable("sessions", {
   userId: uuid()
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-});
+})
 
 export const accounts = pgTable("accounts", {
   id: uuid().primaryKey().defaultRandom(),
@@ -105,7 +105,7 @@ export const accounts = pgTable("accounts", {
   updatedAt: timestamp()
     .$onUpdate(() => new Date())
     .notNull(),
-});
+})
 
 export const verifications = pgTable("verifications", {
   id: uuid().primaryKey().defaultRandom(),
@@ -117,4 +117,4 @@ export const verifications = pgTable("verifications", {
     .defaultNow()
     .$onUpdate(() => new Date())
     .notNull(),
-});
+})

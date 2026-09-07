@@ -9,9 +9,9 @@ interface IssueModalProps {
   params: Promise<{ id: string }>
 }
 
-// A promessa de `params` desce inteira em vez de ser aguardada aqui. Aguardar
-// no corpo da página prende a casca do modal na mesma espera do dado, e com
-// `cacheComponents` isso derruba o build inteiro.
+// The `params` promise is passed down whole instead of awaited here. Awaiting
+// it in the page body pins the modal shell to the same wait as the data, and
+// with `cacheComponents` that fails the build.
 export default function IssueModal({ params }: IssueModalProps) {
   return (
     <Modal>

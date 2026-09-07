@@ -1,0 +1,31 @@
+---
+description: Padroes de UI para componentes React e Tailwind
+globs: "{src/components/**/*.tsx,src/app/**/*.tsx,src/app/globals.css}"
+alwaysApply: false
+---
+
+# UI, Componentes e Tailwind
+
+## Composicao de componentes
+- Preferir componentes pequenos e composicao por subcomponentes (padrao `Card.Root`, `Card.Header`, etc.).
+- Tipar props com `ComponentProps<...>` quando for wrapper de elementos nativos ou componentes.
+- Reaproveitar componentes base (`Button`, `Input`, `Modal`, `Skeleton`) antes de criar novos.
+
+## Estilo com Tailwind
+- Usar classes utilitarias e consolidar conflitos com `twMerge`.
+- Preservar sistema de cores `navy-*` definido em `src/app/globals.css`.
+- Manter foco em acessibilidade visual (`focus-visible:ring-*`) nos elementos interativos.
+
+## Acessibilidade e UX
+- Botoes e links precisam de estados de foco, hover e disabled quando aplicavel.
+- Inputs e formularios devem expor mensagens de erro claras.
+- Loading/skeleton deve existir para estados assincromos de UI.
+
+## Client components
+- Marcar `"use client"` apenas quando necessario.
+- Para dados client-side, seguir padrao com React Query e `queryKey` estavel.
+- Evitar side effects pesados dentro de componentes de apresentacao.
+
+## Consistencia visual
+- Evitar introduzir padroes de design paralelos sem alinhamento com os tokens atuais.
+- Seguir os espacamentos, bordas e densidade visual ja presentes no board.

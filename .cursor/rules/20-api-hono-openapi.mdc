@@ -1,0 +1,35 @@
+---
+description: Padroes da API Hono com contratos OpenAPI e Zod
+globs: "src/api/**/*.ts"
+alwaysApply: false
+---
+
+# API Hono + OpenAPI
+
+## Contratos primeiro
+- Definir rotas com `createRoute` em `@hono/zod-openapi`.
+- Declarar `request` e `responses` com schemas Zod completos.
+- Registrar handlers com `.openapi(route, handler)` para manter documentacao sincronizada.
+
+## Estrutura de rotas
+- Organizar por recurso/acao (`create-issue`, `list-issues`, `update-comment`, etc.).
+- Exportar schemas reutilizaveis para consumo no frontend (`src/http`).
+- Preservar basePath `/api` e agrupamento de rotas no `src/api/index.ts`.
+
+## Middleware e contexto
+- Usar `c.set`/`c.get` para `user` e `session` no contexto quando depender de auth.
+- Para endpoints protegidos, reaproveitar middleware `requireAuth`.
+- Evitar duplicar checagens de auth quando middleware ja cobre o caso.
+
+## Ordem e registro de rotas
+- Em `src/api/index.ts`, manter endpoints especificos antes de rotas parametrizadas quando houver conflito.
+- Manter docs (`/openapi.json`, `/docs`) registradas antes do middleware de sessao, conforme padrao atual.
+
+## Padrao de resposta e erros
+- Em validacao: manter retorno consistente com `error` e `message`.
+- Em sucesso: responder payloads aderentes ao schema declarado e status code correto.
+- Evitar "respostas invisiveis" fora do contrato OpenAPI.
+
+## Banco (uso a partir da API)
+- Acessar dados via `db` de `src/api/db`.
+- Manter mapeamento explicito de campos retornados quando o contrato nao for 1:1 com a tabela.
