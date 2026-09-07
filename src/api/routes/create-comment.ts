@@ -89,6 +89,13 @@ export const createComment = app.openapi(route, async (c) => {
   const body = c.req.valid("json")
   const user = c.get("user")
 
+  if (!user) {
+    return c.json(
+      { error: "Unauthorized", message: "You must be signed in" },
+      401,
+    )
+  }
+
   // Check if issue exists
   const [issue] = await db.select().from(issues).where(eq(issues.id, id))
 
@@ -106,8 +113,8 @@ export const createComment = app.openapi(route, async (c) => {
     .insert(comments)
     .values({
       issueId: id,
-      authorName: user!.name,
-      authorAvatar: user!.image || "",
+      authorName: user.name,
+      authorAvatar: user.image || "",
       text: body.text,
     })
     .returning()

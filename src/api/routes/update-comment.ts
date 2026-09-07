@@ -101,6 +101,13 @@ export const updateComment = app.openapi(route, async (c) => {
   const body = c.req.valid("json");
   const user = c.get("user");
 
+  if (!user) {
+    return c.json(
+      { error: "Unauthorized", message: "You must be signed in" },
+      401,
+    );
+  }
+
   // Check if comment exists
   const [existingComment] = await db
     .select()
@@ -121,7 +128,7 @@ export const updateComment = app.openapi(route, async (c) => {
   const [author] = await db
     .select()
     .from(users)
-    .where(eq(users.email, user!.email));
+    .where(eq(users.email, user.email));
 
   if (existingComment.authorName !== author.name) {
     return c.json(

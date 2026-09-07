@@ -1,5 +1,5 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
-import { desc, eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { db } from "../db";
 import { comments, issues } from "../db/schema";
 
@@ -88,7 +88,9 @@ export const listIssueComments = new OpenAPIHono().openapi(route, async (c) => {
     .select()
     .from(comments)
     .where(eq(comments.issueId, id))
-    .orderBy(desc(comments.createdAt))
+    // Mais antigo primeiro: uma thread lida de trás para frente coloca a
+    // resposta acima da pergunta.
+    .orderBy(asc(comments.createdAt))
     .limit(limit)
     .offset(offset);
 
